@@ -65,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == CODE_CAMERA && resultCode == RESULT_OK) {
-            new EncodeImage().execute();   //把bitmap转换成base74字符串
+//            new EncodeImage().execute();   //把bitmap转换成base74字符串
+            uploadImage2();
         }
     }
 
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         map.put("encoding_string", encoded_string);
         map.put("image_name", image_name);
         OkHttpUtils.post()
-                .url("http:192.168.0.112/phpdemo/uploadimage.php")
+                .url("http:192.168.0.115/phpdemo/uploadimage.php")
                 .params(map)
                 .tag(this)
                 .build()
@@ -108,6 +109,27 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("成功or失败", "信息：" + response);
                     }
                 });
+    }
+
+
+    private void uploadImage2(){
+        OkHttpUtils.post()
+                .url("http:192.168.0.115/phpdemo/upload_file.php")
+                .addFile("file",image_name,file)
+                .tag(this)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e("出错了", "错误信息：" + e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e("成功or失败", "信息：" + response);
+                    }
+                });
+
     }
 
 
